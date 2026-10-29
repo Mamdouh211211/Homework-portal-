@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Al-Arqam Schools | منصة تسليم الواجبات</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Cairo', sans-serif; }
+    .font-en { font-family: 'Poppins', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800">
+
+  <!-- Header باللغة الإنجليزية -->
+  <header class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white shadow-lg border-b-4 border-amber-400">
+    <div class="max-w-5xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+      <div class="font-en">
+        <h1 class="text-2xl md:text-3xl font-extrabold tracking-wide text-amber-300">AL-ARQAM SCHOOLS</h1>
+        <p class="text-indigo-200 text-sm md:text-base font-semibold mt-1">English Language Department</p>
+        <p class="text-slate-300 text-xs md:text-sm mt-0.5"><i class="fa-solid fa-chalkboard-user mr-1 text-amber-400"></i> Teacher: <span class="font-bold text-white">Mr. Ahmed Mamdouh Rady</span></p>
+      </div>
+      <div>
+        <button id="toggleViewBtn" onclick="openTeacherModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-2 text-sm">
+          <i class="fa-solid fa-lock"></i>
+          <span>لوحة المعلم</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 py-8">
+
+    <!-- واجهة الطالب -->
+    <section id="studentSection" class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-slate-200">
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-slate-800">إرسال الواجب المدرسي والمشاريع</h2>
+        <p class="text-slate-500 text-sm mt-1">يرجى كتابة الاسم الثلاثي واختيار الصف وإرفاق صور الحل أو ملف PDF</p>
+      </div>
+
+      <form id="submissionForm" onsubmit="handleStudentSubmit(event)" class="space-y-5">
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">اسم الطالب الثلاثي <span class="text-red-500">*</span></label>
+          <input type="text" id="studentName" required placeholder="مثال: ريان فهد السبيعي" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">المرحلة الدراسية <span class="text-red-500">*</span></label>
+            <select id="gradeSelect" required onchange="handleGradeChange()" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+              <option value="" disabled selected>اختر المرحلة</option>
+              <option value="الصف الثاني">الصف الثاني الابتدائي</option>
+              <option value="الصف الرابع">الصف الرابع الابتدائي</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-slate-700 mb-1">الفصل <span class="text-red-500">*</span></label>
+            <select id="classSelect" required disabled class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition disabled:bg-slate-100 disabled:cursor-not-allowed">
+              <option value="" disabled selected>اختر المرحلة أولاً</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">إرفاق الصور أو الواجب (PDF / صور) <span class="text-red-500">*</span></label>
+          <div class="border-2 border-dashed border-indigo-200 hover:border-indigo-400 bg-indigo-50/50 rounded-2xl p-6 text-center cursor-pointer transition" onclick="document.getElementById('fileInput').click()">
+            <input type="file" id="fileInput" multiple accept="image/*,.pdf" onchange="handleFileSelect(event)" class="hidden">
+            <i class="fa-solid fa-cloud-arrow-up text-4xl text-indigo-500 mb-2"></i>
+            <p class="font-bold text-slate-700 text-sm">اضغط هنا لاختيار الملفات أو الصور</p>
+            <p class="text-xs text-slate-400 mt-1">يمكنك رفع أكثر من صورة دفعة واحدة</p>
+          </div>
+          <div id="filePreviewList" class="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">ملاحظة للمعلم (اختياري)</label>
+          <textarea id="studentNote" rows="2" placeholder="اكتب ملاحظتك إن وجدت..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"></textarea>
+        </div>
+
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-indigo-500/25 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>إرسال الحل الآن</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- لوحة تحكم المعلم (مخفية افتراضياً) -->
+    <section id="teacherSection" class="hidden bg-white rounded-2xl shadow-xl p-6 border border-slate-200">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-800">سجل مشاريع وحلول الطلاب</h2>
+          <p class="text-slate-500 text-sm">البريد الإلكتروني المخصص: elgarhy2016@gmail.com</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="exportData()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition flex items-center gap-1.5">
+            <i class="fa-solid fa-file-excel"></i> تصدير البيانات
+          </button>
+          <button onclick="closeTeacherPortal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold px-3 py-2 rounded-lg transition">
+            رجوع
+          </button>
+        </div>
+      </div>
+
+      <div class="flex gap-3 my-4">
+        <select id="filterClass" onchange="renderSubmissions()" class="px-3 py-2 border rounded-lg text-sm outline-none">
+          <option value="all">كل الفصول</option>
+          <option value="ثاني أول (2/1)">ثاني أول (2/1)</option>
+          <option value="ثاني ثاني (2/2)">ثاني ثاني (2/2)</option>
+          <option value="ثاني ثالث (2/3)">ثاني ثالث (2/3)</option>
+          <option value="رابع أول (4/1)">رابع أول (4/1)</option>
+          <option value="رابع ثاني (4/2)">رابع ثاني (4/2)</option>
+        </select>
+        <button onclick="clearAllData()" class="text-red-500 hover:text-red-700 text-xs font-bold mr-auto">مسح الكل</button>
+      </div>
+
+      <div id="submissionsContainer" class="space-y-4"></div>
+    </section>
+
+  </main>
+
+  <!-- نافذة طلب الرقم السري للمعلم -->
+  <div id="passwordModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center">
+      <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-3">
+        <i class="fa-solid fa-key text-xl"></i>
+      </div>
+      <h3 class="text-lg font-bold text-slate-800">الدخول إلى لوحة المعلم</h3>
+      <p class="text-xs text-slate-500 mt-1 mb-4">أدخل رمز المرور السري للمتابعة</p>
+      <input type="password" id="teacherPass" placeholder="رمز المرور" class="w-full text-center tracking-widest text-lg font-bold px-4 py-2 border rounded-xl mb-4 focus:ring-2 focus:ring-indigo-500 outline-none">
+      <div class="flex gap-2">
+        <button onclick="verifyTeacherPass()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded-xl transition">دخول</button>
+        <button onclick="closeTeacherModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-xl transition">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // الرقم السري المحدث للمعلم
+    const TEACHER_PIN = "211211";
+    let selectedFiles = [];
+
+    const classOptions = {
+      "الصف الثاني": ["ثاني أول (2/1)", "ثاني ثاني (2/2)", "ثاني ثالث (2/3)"],
+      "الصف الرابع": ["رابع أول (4/1)", "رابع ثاني (4/2)"]
+    };
+
+    function handleGradeChange() {
+      const grade = document.getElementById('gradeSelect').value;
+      const classSelect = document.getElementById('classSelect');
+      classSelect.innerHTML = '<option value="" disabled selected>اختر الفصل</option>';
+      if (classOptions[grade]) {
+        classSelect.disabled = false;
+        classOptions[grade].forEach(cls => {
+          const opt = document.createElement('option');
+          opt.value = cls;
+          opt.textContent = cls;
+          classSelect.appendChild(opt);
+        });
+      }
+    }
+
+    function handleFileSelect(e) {
+      const files = Array.from(e.target.files);
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          selectedFiles.push({ name: file.name, type: file.type, data: event.target.result });
+          renderFilePreviews();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderFilePreviews() {
+      const container = document.getElementById('filePreviewList');
+      container.innerHTML = '';
+      selectedFiles.forEach((file, index) => {
+        const div = document.createElement('div');
+        div.className = 'relative bg-slate-50 border p-2 rounded-xl flex items-center gap-2 overflow-hidden';
+        const isImg = file.type.startsWith('image/');
+        div.innerHTML = `
+          <i class="${isImg ? 'fa-solid fa-image text-indigo-500' : 'fa-solid fa-file-pdf text-red-500'} text-xl"></i>
+          <span class="text-xs truncate flex-1">${file.name}</span>
+          <button type="button" onclick="removeFile(${index})" class="text-red-500 hover:text-red-700 text-xs"><i class="fa-solid fa-xmark"></i></button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function removeFile(index) {
+      selectedFiles.splice(index, 1);
+      renderFilePreviews();
+    }
+
+    function handleStudentSubmit(e) {
+      e.preventDefault();
+      if (selectedFiles.length === 0) {
+        alert('يرجى إرفاق صورة الحل أو الملف أولاً.');
+        return;
+      }
+      const submission = {
+        id: Date.now(),
+        name: document.getElementById('studentName').value,
+        grade: document.getElementById('gradeSelect').value,
+        className: document.getElementById('classSelect').value,
+        note: document.getElementById('studentNote').value,
+        files: selectedFiles,
+        date: new Date().toLocaleString('ar-SA')
+      };
+
+      const existing = JSON.parse(localStorage.getItem('al_arqam_submissions') || '[]');
+      existing.unshift(submission);
+      localStorage.setItem('al_arqam_submissions', JSON.stringify(existing));
+
+      alert('تم إرسال الحل بنجاح إلى الأستاذ أحمد ممدوح راضي!');
+      document.getElementById('submissionForm').reset();
+      selectedFiles = [];
+      renderFilePreviews();
+      document.getElementById('classSelect').disabled = true;
+    }
+
+    function openTeacherModal() {
+      document.getElementById('passwordModal').classList.remove('hidden');
+      document.getElementById('teacherPass').value = '';
+      document.getElementById('teacherPass').focus();
+    }
+
+    function closeTeacherModal() {
+      document.getElementById('passwordModal').classList.add('hidden');
+    }
+
+    function verifyTeacherPass() {
+      const entered = document.getElementById('teacherPass').value;
+      if (entered === TEACHER_PIN) {
+        closeTeacherModal();
+        document.getElementById('studentSection').classList.add('hidden');
+        document.getElementById('teacherSection').classList.remove('hidden');
+        renderSubmissions();
+      } else {
+        alert('رمز المرور غير صحيح!');
+      }
+    }
+
+    function closeTeacherPortal() {
+      document.getElementById('teacherSection').classList.add('hidden');
+      document.getElementById('studentSection').classList.remove('hidden');
+    }
+
+    function renderSubmissions() {
+      const container = document.getElementById('submissionsContainer');
+      const filter = document.getElementById('filterClass').value;
+      const data = JSON.parse(localStorage.getItem('al_arqam_submissions') || '[]');
+      const filtered = filter === 'all' ? data : data.filter(item => item.className === filter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="text-center py-10 text-slate-400">لا توجد حلول مرسلة حتى الآن.</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => `
+        <div class="border rounded-xl p-4 bg-slate-50 hover:bg-white transition shadow-sm">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <h4 class="font-bold text-slate-800 text-base">${item.name}</h4>
+              <span class="inline-block bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded font-bold">${item.className}</span>
+              <span class="text-xs text-slate-400 mr-2">${item.date}</span>
+            </div>
+            <button onclick="deleteSubmission(${item.id})" class="text-slate-400 hover:text-red-500 text-sm"><i class="fa-solid fa-trash"></i></button>
+          </div>
+          ${item.note ? `<p class="text-xs bg-white p-2 rounded border mb-2 text-slate-600"><strong>ملاحظة:</strong> ${item.note}</p>` : ''}
+          <div class="flex flex-wrap gap-2 mt-2">
+            ${item.files.map(f => `
+              <a href="${f.data}" download="${item.name}_${f.name}" class="text-xs bg-white border border-slate-200 px-2 py-1 rounded flex items-center gap-1 text-slate-700 hover:text-indigo-600">
+                <i class="fa-solid fa-download"></i> ${f.name}
+              </a>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function deleteSubmission(id) {
+      if (confirm('هل تريد حذف هذا الواجب؟')) {
+        let data = JSON.parse(localStorage.getItem('al_arqam_submissions') || '[]');
+        data = data.filter(i => i.id !== id);
+        localStorage.setItem('al_arqam_submissions', JSON.stringify(data));
+        renderSubmissions();
+      }
+    }
+
+    function clearAllData() {
+      if (confirm('تحذير: سيتم حذف جميع المشاريع المسجلة بالكامل، هل أنت متأكد؟')) {
+        localStorage.removeItem('al_arqam_submissions');
+        renderSubmissions();
+      }
+    }
+
+    function exportData() {
+      const data = JSON.parse(localStorage.getItem('al_arqam_submissions') || '[]');
+      if (data.length === 0) return alert('لا توجد بيانات لتصديرها.');
+      let csv = '\uFEFFاسم الطالب,المرحلة,الفصل,التاريخ,عدد الملفات,الملاحظات\n';
+      data.forEach(d => {
+        csv += `"${d.name}","${d.grade}","${d.className}","${d.date}","${d.files.length}","${d.note || ''}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'Al_Arqam_English_Submissions.csv';
+      link.click();
+    }
+  </script>
+</body>
+</html>
